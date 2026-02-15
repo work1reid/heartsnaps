@@ -2,7 +2,7 @@
 // HEARTSNAPS - ADMIN DASHBOARD
 // =============================================================================
 
-let supabase = null;
+let supabaseClient = null;
 let currentUser = null;
 let adminRole = null;
 let authToken = null;
@@ -23,10 +23,10 @@ async function initAdmin() {
         const config = await response.json();
 
         // Initialize Supabase
-        supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+        supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
 
         // Check for existing session
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
 
         if (session) {
             currentUser = session.user;
@@ -37,7 +37,7 @@ async function initAdmin() {
         }
 
         // Listen for auth changes
-        supabase.auth.onAuthStateChange(async (event, session) => {
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
             if (session) {
                 currentUser = session.user;
                 authToken = session.access_token;
@@ -71,7 +71,7 @@ function setupNavigation() {
 // =============================================================================
 
 async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
             redirectTo: window.location.href
@@ -85,7 +85,7 @@ async function signInWithGoogle() {
 }
 
 async function signOut() {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     showLoginScreen();
 }
 
