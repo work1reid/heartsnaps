@@ -2,7 +2,7 @@
 // HEARTSNAPS - FRONTEND APPLICATION
 // =============================================================================
 
-let supabase = null;
+let supabaseClient = null;
 let stripe = null;
 let currentUser = null;
 
@@ -43,20 +43,20 @@ async function initApp() {
         const config = await response.json();
 
         // Initialize Supabase
-        supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+        supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
 
         // Initialize Stripe
         stripe = Stripe(config.stripePublishableKey);
 
         // Check for existing session
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
             currentUser = session.user;
             updateAuthUI();
         }
 
         // Listen for auth changes
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             currentUser = session?.user || null;
             updateAuthUI();
         });
@@ -563,7 +563,7 @@ function closeAuthModal() {
 }
 
 async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
             redirectTo: window.location.origin
@@ -583,7 +583,7 @@ function updateAuthUI() {
         navBtn.onclick = () => {
             // Could show account menu
             if (confirm('Sign out?')) {
-                supabase.auth.signOut();
+                supabaseClient.auth.signOut();
             }
         };
     } else {
