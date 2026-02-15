@@ -145,7 +145,7 @@ app.use(helmet({
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
             imgSrc: ["'self'", "data:", "blob:", "https://*.supabase.co"],
             frameSrc: ["https://js.stripe.com", "https://accounts.google.com"],
-            connectSrc: ["'self'", "https://*.supabase.co", "https://api.stripe.com", "https://ntfy.sh"]
+            connectSrc: ["'self'", "https://*.supabase.co", "https://api.stripe.com", "https://ntfy.sh", "https://cdn.jsdelivr.net"]
         }
     }
 }));
