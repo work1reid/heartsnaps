@@ -136,18 +136,7 @@ app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async
 // =============================================================================
 
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com", "https://accounts.google.com", "https://cdn.jsdelivr.net"],
-            scriptSrcAttr: ["'unsafe-inline'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            imgSrc: ["'self'", "data:", "blob:", "https://*.supabase.co"],
-            frameSrc: ["https://js.stripe.com", "https://accounts.google.com"],
-            connectSrc: ["'self'", "https://*.supabase.co", "https://api.stripe.com", "https://ntfy.sh", "https://cdn.jsdelivr.net"]
-        }
-    }
+    contentSecurityPolicy: false
 }));
 
 app.use(express.json());
