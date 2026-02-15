@@ -982,7 +982,7 @@ app.put('/api/admin/orders/:id/status', async (req, res) => {
     if (!admin) return res.status(403).json({ error: 'Unauthorized' });
 
     const { status, tracking_number, carrier, admin_notes } = req.body;
-    const validStatuses = ['pending', 'paid', 'printing', 'shipped', 'ready_pickup', 'completed', 'cancelled'];
+    const validStatuses = ['pending', 'paid', 'printing', 'shipped', 'ready_pickup', 'completed', 'cancelled', 'archived'];
 
     if (!validStatuses.includes(status)) {
         return res.status(400).json({ error: 'Invalid status' });
@@ -1068,6 +1068,59 @@ app.get('/api/admin/orders/:id/download', async (req, res) => {
     } catch (err) {
         console.error('Download error:', err);
         res.status(500).json({ error: 'Download failed' });
+    }
+});
+
+// Delete order (super_admin only)
+app.delete('/api/admin/orders/:id', async (req, res) => {
+    const admin = await verifyAdmin(req, 'super_admin');
+    if (!admin) return res.status(403).json({ error: 'Unauthorized - requires super_admin' });
+
+    try {
+        // Get order details first
+        const { data: order, error: orderError } = await supabaseAdmin
+            .from('orders')
+            .select('order_number')
+            .eq('id', req.params.id)
+            .single();
+
+        if (orderError || !order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        // Get order items to delete photos
+        const { data: items } = await supabaseAdmin
+            .from('order_items')
+            .select('original_file_path')
+            .eq('order_id', req.params.id);
+
+        // Delete photos from storage
+        if (items && items.length > 0) {
+            const filePaths = items.map(item => item.original_file_path);
+            await supabaseAdmin.storage
+                .from('order-photos')
+                .remove(filePaths);
+        }
+
+        // Delete order items
+        await supabaseAdmin
+            .from('order_items')
+            .delete()
+            .eq('order_id', req.params.id);
+
+        // Delete the order
+        await supabaseAdmin
+            .from('orders')
+            .delete()
+            .eq('id', req.params.id);
+
+        await logAdminAction(admin.userId, 'delete_order', 'order', req.params.id, { order_number: order.order_number });
+
+        res.json({ success: true });
+
+    } catch (err) {
+        console.error('Delete order error:', err);
+        res.status(500).json({ error: 'Failed to delete order' });
     }
 });
 

@@ -71,17 +71,18 @@
             <div id="view-orders" class="admin-view">
                 <div class="admin-header">
                     <h1>Orders</h1>
-                    <div class="filters">
-                        <select id="order-status-filter" onchange="loadOrders()">
-                            <option value="all">All Orders</option>
-                            <option value="paid">Needs Action</option>
-                            <option value="printing">Printing</option>
-                            <option value="shipped">Shipped</option>
-                            <option value="ready_pickup">Ready for Pickup</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
+                </div>
+
+                <!-- Status Filter Tabs -->
+                <div class="filter-tabs" id="filter-tabs">
+                    <button class="filter-tab active" data-status="all" onclick="filterOrders('all')">All</button>
+                    <button class="filter-tab" data-status="paid" onclick="filterOrders('paid')">Needs Action</button>
+                    <button class="filter-tab" data-status="printing" onclick="filterOrders('printing')">Printing</button>
+                    <button class="filter-tab" data-status="shipped" onclick="filterOrders('shipped')">Shipped</button>
+                    <button class="filter-tab" data-status="ready_pickup" onclick="filterOrders('ready_pickup')">Ready Pickup</button>
+                    <button class="filter-tab" data-status="completed" onclick="filterOrders('completed')">Completed</button>
+                    <button class="filter-tab" data-status="archived" onclick="filterOrders('archived')">Archived</button>
+                    <button class="filter-tab" data-status="cancelled" onclick="filterOrders('cancelled')">Cancelled</button>
                 </div>
 
                 <div id="orders-table">

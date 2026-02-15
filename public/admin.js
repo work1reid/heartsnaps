@@ -241,14 +241,26 @@ async function loadDashboard() {
 // ORDERS
 // =============================================================================
 
+let currentOrderFilter = 'all';
+
 async function loadOrders() {
     try {
-        const status = document.getElementById('order-status-filter')?.value || 'all';
-        const orders = await apiCall(`/api/admin/orders?status=${status}`);
+        const orders = await apiCall(`/api/admin/orders?status=${currentOrderFilter}`);
         document.getElementById('orders-table').innerHTML = renderOrdersTable(orders);
     } catch (err) {
         console.error('Orders load error:', err);
     }
+}
+
+function filterOrders(status) {
+    currentOrderFilter = status;
+
+    // Update active tab
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.status === status);
+    });
+
+    loadOrders();
 }
 
 function renderOrdersTable(orders) {
@@ -281,7 +293,13 @@ function renderOrdersTable(orders) {
                         <td><span class="status-badge ${order.status}">${formatStatus(order.status)}</span></td>
                         <td>${formatDate(order.created_at)}</td>
                         <td>
-                            <button class="btn btn-small" onclick="viewOrder('${order.id}')">View</button>
+                            <div class="action-buttons">
+                                <button class="btn btn-small" onclick="viewOrder('${order.id}')">View</button>
+                                ${order.status !== 'archived' ?
+                                    `<button class="btn btn-small btn-outline" onclick="archiveOrder('${order.id}')">Archive</button>` :
+                                    `<button class="btn btn-small btn-outline" onclick="restoreOrder('${order.id}')">Restore</button>`
+                                }
+                            </div>
                         </td>
                     </tr>
                 `).join('')}
@@ -302,7 +320,7 @@ async function viewOrder(orderId) {
 }
 
 function renderOrderModal(order) {
-    const statusOptions = ['paid', 'printing', 'shipped', 'ready_pickup', 'completed', 'cancelled'];
+    const statusOptions = ['paid', 'printing', 'shipped', 'ready_pickup', 'completed', 'archived', 'cancelled'];
 
     document.getElementById('order-modal-content').innerHTML = `
         <h2>Order ${order.order_number}</h2>
@@ -318,9 +336,9 @@ function renderOrderModal(order) {
                 ${order.shipping_type === 'pickup' ? `
                     <p>Pickup in Forbes NSW</p>
                 ` : `
-                    <p>${order.shipping_address_line1}</p>
+                    <p>${order.shipping_address_line1 || ''}</p>
                     ${order.shipping_address_line2 ? `<p>${order.shipping_address_line2}</p>` : ''}
-                    <p>${order.shipping_city}, ${order.shipping_state} ${order.shipping_postcode}</p>
+                    <p>${order.shipping_city || ''}, ${order.shipping_state || ''} ${order.shipping_postcode || ''}</p>
                 `}
 
                 ${order.is_gift ? `
@@ -357,6 +375,14 @@ function renderOrderModal(order) {
         </div>
 
         <div class="order-actions">
+            <h3>Quick Actions</h3>
+            <div class="quick-actions">
+                <button class="btn btn-outline" onclick="quickUpdateStatus('${order.id}', 'printing')">Mark Printing</button>
+                <button class="btn btn-outline" onclick="quickUpdateStatus('${order.id}', 'shipped')">Mark Shipped</button>
+                <button class="btn btn-outline" onclick="quickUpdateStatus('${order.id}', 'ready_pickup')">Ready for Pickup</button>
+                <button class="btn" onclick="quickUpdateStatus('${order.id}', 'completed')">Mark Completed</button>
+            </div>
+
             <h3>Update Status</h3>
             <div class="status-update">
                 <select id="status-select">
@@ -366,6 +392,7 @@ function renderOrderModal(order) {
                 </select>
 
                 <input type="text" id="tracking-input" placeholder="Tracking number (optional)" value="${order.tracking_number || ''}">
+                <input type="text" id="carrier-input" placeholder="Carrier (e.g. Australia Post)" value="${order.carrier || ''}">
 
                 <button class="btn" onclick="updateOrderStatus('${order.id}')">Update</button>
             </div>
@@ -373,6 +400,12 @@ function renderOrderModal(order) {
             <h3>Admin Notes</h3>
             <textarea id="admin-notes-input" placeholder="Internal notes...">${order.admin_notes || ''}</textarea>
             <button class="btn btn-small" onclick="saveAdminNotes('${order.id}')">Save Notes</button>
+
+            <h3>Danger Zone</h3>
+            <div class="quick-actions">
+                <button class="btn btn-outline" onclick="archiveOrder('${order.id}')">Archive Order</button>
+                <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">Delete Order</button>
+            </div>
         </div>
     `;
 }
@@ -384,18 +417,86 @@ function closeOrderModal() {
 async function updateOrderStatus(orderId) {
     const status = document.getElementById('status-select').value;
     const tracking_number = document.getElementById('tracking-input').value.trim();
+    const carrier = document.getElementById('carrier-input')?.value.trim() || '';
 
     try {
         await apiCall(`/api/admin/orders/${orderId}/status`, {
             method: 'PUT',
-            body: JSON.stringify({ status, tracking_number })
+            body: JSON.stringify({ status, tracking_number, carrier })
         });
 
         alert('Status updated!');
         closeOrderModal();
         loadOrders();
+        loadDashboard();
     } catch (err) {
         alert('Failed to update: ' + err.message);
+    }
+}
+
+async function quickUpdateStatus(orderId, status) {
+    try {
+        await apiCall(`/api/admin/orders/${orderId}/status`, {
+            method: 'PUT',
+            body: JSON.stringify({ status })
+        });
+
+        alert(`Order marked as ${formatStatus(status)}!`);
+        closeOrderModal();
+        loadOrders();
+        loadDashboard();
+    } catch (err) {
+        alert('Failed to update: ' + err.message);
+    }
+}
+
+async function archiveOrder(orderId) {
+    if (!confirm('Are you sure you want to archive this order? It will be hidden from the main orders list.')) return;
+
+    try {
+        await apiCall(`/api/admin/orders/${orderId}/status`, {
+            method: 'PUT',
+            body: JSON.stringify({ status: 'archived' })
+        });
+
+        alert('Order archived!');
+        closeOrderModal();
+        loadOrders();
+        loadDashboard();
+    } catch (err) {
+        alert('Failed to archive: ' + err.message);
+    }
+}
+
+async function restoreOrder(orderId) {
+    try {
+        await apiCall(`/api/admin/orders/${orderId}/status`, {
+            method: 'PUT',
+            body: JSON.stringify({ status: 'completed' })
+        });
+
+        alert('Order restored!');
+        loadOrders();
+    } catch (err) {
+        alert('Failed to restore: ' + err.message);
+    }
+}
+
+async function deleteOrder(orderId) {
+    if (!confirm('Are you sure you want to DELETE this order? This cannot be undone!')) return;
+    if (!confirm('This will permanently delete the order and all associated photos. Are you absolutely sure?')) return;
+
+    try {
+        await apiCall(`/api/admin/orders/${orderId}`, {
+            method: 'DELETE'
+        });
+
+        alert('Order deleted!');
+        closeOrderModal();
+        loadOrders();
+        loadDashboard();
+    } catch (err) {
+        alert('Failed to delete: ' + err.message);
     }
 }
 
@@ -715,6 +816,7 @@ function formatStatus(status) {
         shipped: 'Shipped',
         ready_pickup: 'Ready for Pickup',
         completed: 'Completed',
+        archived: 'Archived',
         cancelled: 'Cancelled'
     };
     return labels[status] || status;
