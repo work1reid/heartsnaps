@@ -29,19 +29,33 @@ const PRICING = {
     personal: {
         tier1: { min: 1, max: 5, pricePerUnit: 1000 },   // $10 each
         tier2: { min: 6, max: 11, pricePerUnit: 800 },   // $8 each
-        tier3: { min: 12, max: 999, pricePerUnit: 700 }  // $7 each
+        tier3: { min: 12, max: 19, pricePerUnit: 700 }   // $7 each
     },
     business: {
         tier1: { min: 1, max: 5, pricePerUnit: 1000 },
         tier2: { min: 6, max: 11, pricePerUnit: 800 },
-        tier3: { min: 12, max: 999, pricePerUnit: 700 }
+        tier3: { min: 12, max: 19, pricePerUnit: 700 }
+    },
+    wedding: {
+        tier1: { min: 20, max: 49, pricePerUnit: 650 },  // $6.50 each
+        tier2: { min: 50, max: 99, pricePerUnit: 550 },  // $5.50 each
+        tier3: { min: 100, max: 999, pricePerUnit: 500 } // $5.00 each
     },
     shipping: 800,  // $8 flat rate
+    freeShippingThreshold: 20000, // Free shipping for orders over $200
     freePickupLocation: 'Forbes NSW'
 };
 
 // Calculate price for quantity
 function calculatePrice(quantity, productType = 'personal') {
+    // Use wedding pricing for bulk orders
+    if (quantity >= 20) {
+        const tiers = PRICING.wedding;
+        if (quantity >= tiers.tier3.min) return quantity * tiers.tier3.pricePerUnit;
+        if (quantity >= tiers.tier2.min) return quantity * tiers.tier2.pricePerUnit;
+        return quantity * tiers.tier1.pricePerUnit;
+    }
+
     const tiers = PRICING[productType] || PRICING.personal;
     if (quantity >= tiers.tier3.min) return quantity * tiers.tier3.pricePerUnit;
     if (quantity >= tiers.tier2.min) return quantity * tiers.tier2.pricePerUnit;
@@ -350,14 +364,20 @@ app.get('/api/pricing', (req, res) => {
         personal: [
             { min: 1, max: 5, price: 10.00, label: '$10 each' },
             { min: 6, max: 11, price: 8.00, label: '$8 each (6-pack)' },
-            { min: 12, max: 999, price: 7.00, label: '$7 each (12-pack)' }
+            { min: 12, max: 19, price: 7.00, label: '$7 each (12-pack)' }
         ],
         business: [
             { min: 1, max: 5, price: 10.00, label: '$10 each' },
             { min: 6, max: 11, price: 8.00, label: '$8 each (6-pack)' },
-            { min: 12, max: 999, price: 7.00, label: '$7 each (12-pack)' }
+            { min: 12, max: 19, price: 7.00, label: '$7 each (12-pack)' }
+        ],
+        wedding: [
+            { min: 20, max: 49, price: 6.50, label: '$6.50 each (20-49)' },
+            { min: 50, max: 99, price: 5.50, label: '$5.50 each (50-99)' },
+            { min: 100, max: 999, price: 5.00, label: '$5.00 each (100+)' }
         ],
         shipping: 8.00,
+        freeShippingThreshold: 20000, // $200 in cents - free shipping for wedding orders over $200
         freePickupLocation: 'Forbes NSW'
     });
 });
@@ -568,7 +588,9 @@ app.post('/api/orders', async (req, res) => {
 
         // Calculate pricing
         const subtotal = calculatePrice(quantity, productType);
-        const shippingCost = shippingType === 'pickup' ? 0 : PRICING.shipping;
+        // Free shipping for orders over $200 or pickup
+        const shippingCost = shippingType === 'pickup' ? 0 :
+            (subtotal >= PRICING.freeShippingThreshold ? 0 : PRICING.shipping);
         let discountAmount = 0;
         let promoCodeId = null;
         let promoCodeUsed = null;
