@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order - Heartsnaps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .track-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .track-form {
+            background: var(--bg-light);
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 32px;
+        }
+
+        .track-form h1 {
+            margin-bottom: 16px;
+        }
+
+        .track-form p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        .track-input {
+            display: flex;
+            gap: 12px;
+        }
+
+        .track-input input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .order-result {
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .order-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+            margin: 32px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -32px;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(233, 30, 99, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(233, 30, 99, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(233, 30, 99, 0); }
+        }
+
+        .timeline-content h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .timeline-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .order-details {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-top: 24px;
+        }
+
+        .order-details h3 {
+            margin-bottom: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-light);
+        }
+
+        .success-banner {
+            background: #e8f5e9;
+            border: 1px solid var(--success);
+            color: #1b5e20;
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .tracking-info {
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-top: 16px;
+        }
+
+        .tracking-info a {
+            color: #1565c0;
+            font-weight: 500;
+        }
+
+        .not-found {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">
+            <span class="logo-icon">&#10084;</span>
+            <span class="logo-text">Heartsnaps</span>
+        </a>
+        <nav class="nav">
+            <a href="/">Home</a>
+        </nav>
+    </header>
+
+    <div class="track-container">
+        <div class="track-form">
+            <h1>Track Your Order</h1>
+            <p>Enter your order number to see the current status.</p>
+            <form onsubmit="trackOrder(event)" class="track-input">
+                <input type="text" id="order-number" placeholder="HS-20260215-001" required>
+                <button type="submit" class="btn">Track</button>
+            </form>
+        </div>
+
+        <div id="order-result" style="display: none;">
+            <!-- Filled by JS -->
+        </div>
+    </div>
+
+    <script>
+        // Check URL params on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const orderNumber = params.get('order');
+            const success = params.get('success');
+
+            if (orderNumber) {
+                document.getElementById('order-number').value = orderNumber;
+                trackOrder(null, orderNumber, success === 'true');
+            }
+        });
+
+        async function trackOrder(event, orderNum, showSuccess) {
+            if (event) event.preventDefault();
+
+            const orderNumber = orderNum || document.getElementById('order-number').value.trim();
+            const resultDiv = document.getElementById('order-result');
+
+            if (!orderNumber) {
+                alert('Please enter an order number');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/track/${encodeURIComponent(orderNumber)}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="not-found">
+                            <h2>Order Not Found</h2>
+                            <p>We couldn't find an order with that number. Please check and try again.</p>
+                        </div>
+                    `;
+                    resultDiv.style.display = 'block';
+                    return;
+                }
+
+                resultDiv.innerHTML = renderOrder(data, showSuccess);
+                resultDiv.style.display = 'block';
+
+            } catch (err) {
+                console.error('Track error:', err);
+                resultDiv.innerHTML = `
+                    <div class="not-found">
+                        <h2>Something went wrong</h2>
+                        <p>Please try again later.</p>
+                    </div>
+                `;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        function renderOrder(order, showSuccess) {
+            const statuses = ['pending', 'paid', 'printing', order.shipping_type === 'pickup' ? 'ready_pickup' : 'shipped', 'completed'];
+            const statusLabels = {
+                pending: 'Order Placed',
+                paid: 'Payment Confirmed',
+                printing: 'Being Printed',
+                shipped: 'Shipped',
+                ready_pickup: 'Ready for Pickup',
+                completed: 'Completed'
+            };
+            const statusDescriptions = {
+                pending: 'Waiting for payment',
+                paid: 'We\'ve received your payment and will start printing soon',
+                printing: 'Your magnets are being carefully printed',
+                shipped: 'Your order is on its way!',
+                ready_pickup: 'Your order is ready to collect from Forbes NSW',
+                completed: 'Thank you for your order!'
+            };
+
+            const currentIndex = statuses.indexOf(order.status);
+
+            let successBanner = '';
+            if (showSuccess) {
+                successBanner = `
+                    <div class="success-banner">
+                        <strong>Payment Successful!</strong> Thank you for your order. We'll get started on your magnets right away.
+                    </div>
+                `;
+            }
+
+            let trackingInfo = '';
+            if (order.tracking_number) {
+                trackingInfo = `
+                    <div class="tracking-info">
+                        <strong>Tracking Number:</strong> ${order.tracking_number}
+                        ${order.carrier ? `<br><strong>Carrier:</strong> ${order.carrier}` : ''}
+                    </div>
+                `;
+            }
+
+            const timeline = statuses.map((status, index) => {
+                let itemClass = '';
+                if (index < currentIndex) itemClass = 'completed';
+                else if (index === currentIndex) itemClass = 'active';
+
+                const timestamp = getStatusTimestamp(order, status);
+
+                return `
+                    <div class="timeline-item ${itemClass}">
+                        <div class="timeline-dot">${index < currentIndex ? '&#10003;' : ''}</div>
+                        <div class="timeline-content">
+                            <h3>${statusLabels[status]}</h3>
+                            <p>${index <= currentIndex ? (timestamp || statusDescriptions[status]) : ''}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="order-result">
+                    ${successBanner}
+
+                    <div class="order-header">
+                        <div class="order-number">${order.order_number}</div>
+                        <span class="status-badge ${order.status}">${statusLabels[order.status] || order.status}</span>
+                    </div>
+
+                    <div class="timeline">
+                        ${timeline}
+                    </div>
+
+                    ${trackingInfo}
+
+                    <div class="order-details">
+                        <h3>Order Summary</h3>
+                        <div class="detail-row">
+                            <span class="detail-label">Product</span>
+                            <span>${order.product_type === 'business' ? 'Business Magnets' : 'Personal Magnets'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Quantity</span>
+                            <span>${order.quantity} magnets</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Delivery</span>
+                            <span>${order.shipping_type === 'pickup' ? 'Pickup (Forbes NSW)' : `${order.shipping_city}, ${order.shipping_state}`}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Total Paid</span>
+                            <span><strong>$${(order.total / 100).toFixed(2)} AUD</strong></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStatusTimestamp(order, status) {
+            const timestamps = {
+                pending: order.created_at,
+                paid: order.paid_at,
+                printing: order.printed_at,
+                shipped: order.shipped_at,
+                ready_pickup: order.shipped_at,
+                completed: order.completed_at
+            };
+
+            const ts = timestamps[status];
+            if (!ts) return null;
+
+            return new Date(ts).toLocaleDateString('en-AU', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>

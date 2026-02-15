@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Heartsnaps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-card">
+            <div class="logo">
+                <span class="logo-icon">&#10084;</span>
+                <span class="logo-text">Heartsnaps</span>
+            </div>
+            <h1>Admin Dashboard</h1>
+            <p>Sign in with your admin account to continue.</p>
+            <button class="btn btn-google" onclick="signInWithGoogle()">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Sign in with Google
+            </button>
+            <p class="login-note">Only authorized admin accounts can access this dashboard.</p>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="admin-layout" style="display: none;">
+        <aside class="admin-sidebar">
+            <div class="logo">
+                <span class="logo-icon">&#10084;</span>
+                <span class="logo-text">Heartsnaps</span>
+            </div>
+            <nav class="admin-nav">
+                <a href="#" class="active" data-view="dashboard">Dashboard</a>
+                <a href="#" data-view="orders">Orders</a>
+                <a href="#" data-view="customers">Customers</a>
+                <a href="#" data-view="promos">Promo Codes</a>
+                <a href="#" data-view="gallery">Gallery</a>
+                <a href="#" data-view="admins">Admin Users</a>
+            </nav>
+            <div class="sidebar-footer">
+                <p id="admin-email"></p>
+                <button class="btn btn-small btn-outline" onclick="signOut()">Sign Out</button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="admin-view active">
+                <div class="admin-header">
+                    <h1>Dashboard</h1>
+                    <button class="btn btn-small" onclick="loadDashboard()">Refresh</button>
+                </div>
+
+                <div class="stats-grid" id="stats-grid">
+                    <!-- Filled by JS -->
+                </div>
+
+                <h2>Recent Orders</h2>
+                <div id="recent-orders">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Orders View -->
+            <div id="view-orders" class="admin-view">
+                <div class="admin-header">
+                    <h1>Orders</h1>
+                    <div class="filters">
+                        <select id="order-status-filter" onchange="loadOrders()">
+                            <option value="all">All Orders</option>
+                            <option value="paid">Needs Action</option>
+                            <option value="printing">Printing</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="ready_pickup">Ready for Pickup</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="orders-table">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Customers View -->
+            <div id="view-customers" class="admin-view">
+                <div class="admin-header">
+                    <h1>Customers</h1>
+                </div>
+
+                <div id="customers-table">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Promo Codes View -->
+            <div id="view-promos" class="admin-view">
+                <div class="admin-header">
+                    <h1>Promo Codes</h1>
+                    <button class="btn" onclick="showCreatePromoModal()">Create Code</button>
+                </div>
+
+                <div id="promos-table">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Gallery View -->
+            <div id="view-gallery" class="admin-view">
+                <div class="admin-header">
+                    <h1>Gallery</h1>
+                    <button class="btn" onclick="showUploadGalleryModal()">Add Image</button>
+                </div>
+
+                <div id="gallery-grid" class="admin-gallery">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Admins View -->
+            <div id="view-admins" class="admin-view">
+                <div class="admin-header">
+                    <h1>Admin Users</h1>
+                    <button class="btn" onclick="showAddAdminModal()">Add Admin</button>
+                </div>
+
+                <div id="admins-table">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal" id="order-modal">
+        <div class="modal-content modal-large">
+            <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            <div id="order-modal-content">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Promo Modal -->
+    <div class="modal" id="promo-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePromoModal()">&times;</button>
+            <h2>Create Promo Code</h2>
+            <form onsubmit="createPromoCode(event)">
+                <div class="form-group">
+                    <label>Code</label>
+                    <input type="text" id="promo-code-input" required placeholder="WELCOME10" style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                    <label>Discount Type</label>
+                    <select id="promo-discount-type">
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="fixed">Fixed Amount ($)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Discount Value</label>
+                    <input type="number" id="promo-discount-value" required min="1" placeholder="10">
+                </div>
+                <div class="form-group">
+                    <label>Max Uses (leave blank for unlimited)</label>
+                    <input type="number" id="promo-max-uses" min="1" placeholder="100">
+                </div>
+                <div class="form-group">
+                    <label>Expires (optional)</label>
+                    <input type="date" id="promo-expires">
+                </div>
+                <div class="form-group">
+                    <label>Description (optional)</label>
+                    <input type="text" id="promo-description" placeholder="Welcome discount for new customers">
+                </div>
+                <button type="submit" class="btn">Create Code</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Admin Modal -->
+    <div class="modal" id="admin-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAdminModal()">&times;</button>
+            <h2>Add Admin</h2>
+            <p>The user must have signed in at least once before they can be added as an admin.</p>
+            <form onsubmit="addAdmin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="admin-email-input" required placeholder="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="admin-role-input">
+                        <option value="admin">Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Add Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Gallery Modal -->
+    <div class="modal" id="gallery-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeGalleryModal()">&times;</button>
+            <h2>Add Gallery Image</h2>
+            <form onsubmit="uploadGalleryImage(event)">
+                <div class="form-group">
+                    <label>Image</label>
+                    <input type="file" id="gallery-file-input" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Caption (optional)</label>
+                    <input type="text" id="gallery-caption" placeholder="Family photo magnet">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="gallery-category">
+                        <option value="personal">Personal</option>
+                        <option value="business">Business</option>
+                        <option value="wedding">Wedding</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

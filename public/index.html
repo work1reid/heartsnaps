@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartsnaps - Custom Photo Magnets</title>
+    <meta name="description" content="Turn your memories into beautiful custom photo magnets. Perfect for weddings, family photos, business cards, and more. Ships Australia-wide.">
+
+    <meta property="og:title" content="Heartsnaps - Custom Photo Magnets">
+    <meta property="og:description" content="Turn your memories into magnets. Custom square photo magnets printed and shipped Australia-wide.">
+    <meta property="og:type" content="website">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Landing Section -->
+    <section id="landing" class="screen active">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">&#10084;</span>
+                <span class="logo-text">Heartsnaps</span>
+            </div>
+            <nav class="nav">
+                <a href="#" onclick="showScreen('landing'); return false;">Home</a>
+                <a href="track.html">Track Order</a>
+                <button class="btn btn-small" onclick="showAuthModal()">Sign In</button>
+            </nav>
+        </header>
+
+        <div class="hero">
+            <h1>Turn Your Memories Into Magnets</h1>
+            <p class="hero-subtitle">Custom square photo magnets, beautifully printed and shipped to your door. Perfect for weddings, family photos, business cards, and more.</p>
+            <button class="btn btn-large" onclick="startOrder()">Create Your Magnets</button>
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="section" id="gallery-section">
+            <h2>Our Magnets</h2>
+            <div class="gallery" id="gallery-grid">
+                <!-- Populated by JS -->
+                <div class="gallery-placeholder">
+                    <div class="placeholder-magnet">Family Photos</div>
+                    <div class="placeholder-magnet">Wedding Memories</div>
+                    <div class="placeholder-magnet">Business Cards</div>
+                    <div class="placeholder-magnet">Pet Pictures</div>
+                    <div class="placeholder-magnet">Travel Moments</div>
+                    <div class="placeholder-magnet">Custom Quotes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <div class="section pricing-section">
+            <h2>Simple Pricing</h2>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>1-5 Magnets</h3>
+                    <div class="price">$10<span>/each</span></div>
+                    <p>Perfect for trying us out</p>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="badge">Best Value</div>
+                    <h3>6-Pack</h3>
+                    <div class="price">$8<span>/each</span></div>
+                    <p class="savings">Save $12</p>
+                    <p>Most popular choice</p>
+                </div>
+                <div class="pricing-card">
+                    <h3>12-Pack</h3>
+                    <div class="price">$7<span>/each</span></div>
+                    <p class="savings">Save $36</p>
+                    <p>Great for gifts</p>
+                </div>
+            </div>
+            <p class="shipping-note">+ $8 flat rate shipping Australia-wide | Free pickup in Forbes NSW</p>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="section social-proof">
+            <h2>Why Heartsnaps?</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">&#9733;</div>
+                    <h3>Premium Quality</h3>
+                    <p>63.5mm x 63.5mm square magnets with vibrant, lasting prints</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">&#9829;</div>
+                    <h3>Made with Love</h3>
+                    <p>Each magnet is carefully crafted by hand in Forbes, NSW</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">&#128230;</div>
+                    <h3>Fast Shipping</h3>
+                    <p>Ships Australia-wide with tracking provided</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="section cta-section">
+            <h2>Ready to Create Your Magnets?</h2>
+            <button class="btn btn-large" onclick="startOrder()">Get Started</button>
+        </div>
+
+        <footer class="footer">
+            <p>Heartsnaps &copy; 2024 | <a href="tel:0421191476">0421 191 476</a> | Forbes, NSW</p>
+            <p><a href="track.html">Track Order</a> | <a href="admin.html">Admin</a></p>
+        </footer>
+    </section>
+
+    <!-- Order Flow Section -->
+    <section id="order-flow" class="screen">
+        <header class="header">
+            <div class="logo" onclick="showScreen('landing')">
+                <span class="logo-icon">&#10084;</span>
+                <span class="logo-text">Heartsnaps</span>
+            </div>
+            <button class="btn btn-small btn-outline" onclick="showScreen('landing')">Cancel</button>
+        </header>
+
+        <div class="order-container">
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <span class="step-num">1</span>
+                    <span class="step-label">Details</span>
+                </div>
+                <div class="step" data-step="2">
+                    <span class="step-num">2</span>
+                    <span class="step-label">Product</span>
+                </div>
+                <div class="step" data-step="3">
+                    <span class="step-num">3</span>
+                    <span class="step-label">Photos</span>
+                </div>
+                <div class="step" data-step="4">
+                    <span class="step-num">4</span>
+                    <span class="step-label">Review</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Customer Details -->
+            <div class="order-step active" data-step="1">
+                <h2>Your Details</h2>
+
+                <div class="returning-customer-prompt" id="returning-prompt">
+                    <p>Ordered before? <a href="#" onclick="showLookupModal(); return false;">Find your details</a> or <a href="#" onclick="showAuthModal(); return false;">Sign in with Google</a></p>
+                </div>
+
+                <form id="details-form" class="form">
+                    <div class="form-group">
+                        <label for="customer-name">Full Name *</label>
+                        <input type="text" id="customer-name" required placeholder="John Smith">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customer-phone">Phone Number *</label>
+                        <input type="tel" id="customer-phone" required placeholder="0412 345 678">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customer-email">Email (optional, for order updates)</label>
+                        <input type="email" id="customer-email" placeholder="john@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery Method *</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="shipping-type" value="delivery" checked onchange="toggleShippingFields()">
+                                <span>Delivery ($8 flat rate)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="shipping-type" value="pickup" onchange="toggleShippingFields()">
+                                <span>Free Pickup (Forbes NSW)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="shipping-fields">
+                        <div class="form-group">
+                            <label for="address-line1">Street Address *</label>
+                            <input type="text" id="address-line1" placeholder="123 Main Street">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address-line2">Unit/Apartment (optional)</label>
+                            <input type="text" id="address-line2" placeholder="Unit 4">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="address-city">City *</label>
+                                <input type="text" id="address-city" placeholder="Sydney">
+                            </div>
+                            <div class="form-group">
+                                <label for="address-state">State *</label>
+                                <select id="address-state">
+                                    <option value="">Select</option>
+                                    <option value="NSW">NSW</option>
+                                    <option value="VIC">VIC</option>
+                                    <option value="QLD">QLD</option>
+                                    <option value="WA">WA</option>
+                                    <option value="SA">SA</option>
+                                    <option value="TAS">TAS</option>
+                                    <option value="ACT">ACT</option>
+                                    <option value="NT">NT</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="address-postcode">Postcode *</label>
+                                <input type="text" id="address-postcode" placeholder="2000" maxlength="4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-large">Continue</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Product Selection -->
+            <div class="order-step" data-step="2">
+                <h2>Choose Your Product</h2>
+
+                <div class="product-types">
+                    <label class="product-card selected" onclick="selectProductType('personal')">
+                        <input type="radio" name="product-type" value="personal" checked>
+                        <div class="product-icon">&#128247;</div>
+                        <h3>Personal Magnets</h3>
+                        <p>Family photos, wedding memories, travel moments, quotes</p>
+                    </label>
+
+                    <label class="product-card" onclick="selectProductType('business')">
+                        <input type="radio" name="product-type" value="business">
+                        <div class="product-icon">&#128188;</div>
+                        <h3>Business Magnets</h3>
+                        <p>Logo magnets, business card magnets, promotional items</p>
+                    </label>
+                </div>
+
+                <div class="quantity-section">
+                    <h3>How Many Magnets?</h3>
+
+                    <div class="quantity-presets">
+                        <button class="quantity-preset" onclick="setQuantity(1)">1</button>
+                        <button class="quantity-preset" onclick="setQuantity(3)">3</button>
+                        <button class="quantity-preset recommended" onclick="setQuantity(6)">6 <span class="preset-badge">Best Value</span></button>
+                        <button class="quantity-preset" onclick="setQuantity(12)">12</button>
+                    </div>
+
+                    <div class="quantity-custom">
+                        <label>Or enter custom quantity:</label>
+                        <div class="quantity-input">
+                            <button onclick="adjustQuantity(-1)">-</button>
+                            <input type="number" id="quantity-input" value="6" min="1" max="100" onchange="updateQuantity()">
+                            <button onclick="adjustQuantity(1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="price-summary" id="price-summary">
+                        <div class="price-row">
+                            <span>6 magnets @ $8 each</span>
+                            <span>$48.00</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Shipping</span>
+                            <span id="shipping-cost">$8.00</span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Total</span>
+                            <span id="total-price">$56.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-buttons">
+                    <button class="btn btn-outline" onclick="goToStep(1)">Back</button>
+                    <button class="btn" onclick="goToStep(3)">Continue to Upload</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Photo Upload -->
+            <div class="order-step" data-step="3">
+                <h2>Upload Your Photos</h2>
+                <p class="upload-instructions">Upload <strong id="upload-count">6</strong> photos for your magnets. Each photo will become one magnet.</p>
+
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">&#128247;</div>
+                    <p>Drag & drop photos here</p>
+                    <p class="upload-or">or</p>
+                    <button class="btn" onclick="document.getElementById('file-input').click()">Choose Files</button>
+                    <input type="file" id="file-input" multiple accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+                    <p class="upload-note">JPG, PNG, WebP up to 10MB each</p>
+                </div>
+
+                <div class="photo-previews" id="photo-previews">
+                    <!-- Photo preview cards added here -->
+                </div>
+
+                <div class="upload-progress" id="upload-progress" style="display:none">
+                    <p>Uploading photos... <span id="upload-status">0/6</span></p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div class="step-buttons">
+                    <button class="btn btn-outline" onclick="goToStep(2)">Back</button>
+                    <button class="btn" id="continue-to-review" onclick="goToStep(4)" disabled>Continue to Review</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Review & Checkout -->
+            <div class="order-step" data-step="4">
+                <h2>Review Your Order</h2>
+
+                <div class="review-section">
+                    <h3>Your Magnets</h3>
+                    <div class="review-magnets" id="review-magnets">
+                        <!-- Magnet previews -->
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Delivery Details</h3>
+                    <div class="review-details" id="review-details">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Gift Option</h3>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="is-gift" onchange="toggleGiftFields()">
+                        <span>This is a gift (we'll include a gift message)</span>
+                    </label>
+                    <div id="gift-fields" style="display:none">
+                        <div class="form-group">
+                            <label for="gift-message">Gift Message</label>
+                            <textarea id="gift-message" placeholder="Write a personal message..." rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Order Notes</h3>
+                    <div class="form-group">
+                        <textarea id="order-notes" placeholder="Any special requests? (optional)" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Promo Code</h3>
+                    <div class="promo-input">
+                        <input type="text" id="promo-code" placeholder="Enter code">
+                        <button class="btn btn-small" onclick="applyPromoCode()">Apply</button>
+                    </div>
+                    <p class="promo-message" id="promo-message"></p>
+                </div>
+
+                <div class="order-summary" id="order-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">$48.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span id="summary-shipping">$8.00</span>
+                    </div>
+                    <div class="summary-row discount" id="discount-row" style="display:none">
+                        <span>Discount</span>
+                        <span id="summary-discount">-$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="summary-total">$56.00</span>
+                    </div>
+                </div>
+
+                <div class="step-buttons">
+                    <button class="btn btn-outline" onclick="goToStep(3)">Back</button>
+                    <button class="btn btn-large" id="checkout-btn" onclick="proceedToCheckout()">
+                        Proceed to Payment
+                    </button>
+                </div>
+
+                <p class="payment-note">Secure payment via Stripe. We accept cards, Apple Pay, Google Pay.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            <h2>Sign In</h2>
+            <p>Sign in to save your details and view past orders.</p>
+            <button class="btn btn-google" onclick="signInWithGoogle()">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Continue with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Lookup Modal -->
+    <div class="modal" id="lookup-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLookupModal()">&times;</button>
+            <h2>Find Your Details</h2>
+            <p>Enter your phone number or email from a previous order.</p>
+            <form onsubmit="lookupCustomer(event)">
+                <div class="form-group">
+                    <label for="lookup-input">Phone or Email</label>
+                    <input type="text" id="lookup-input" placeholder="0412 345 678 or john@example.com">
+                </div>
+                <button type="submit" class="btn">Find My Details</button>
+            </form>
+            <p class="lookup-result" id="lookup-result"></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="app.js"></script>
+</body>
+</html>
