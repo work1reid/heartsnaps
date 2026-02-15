@@ -74,7 +74,7 @@ async function signInWithGoogle() {
     const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: window.location.href
+            redirectTo: 'https://heartsnaps.vercel.app/admin.html'
         }
     });
 
