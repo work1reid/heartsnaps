@@ -1,0 +1,437 @@
+/* =============================================================================
+   BLOG STYLES
+   ============================================================================= */
+
+.blog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.blog-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.blog-header .logo-icon {
+    color: var(--primary);
+    font-size: 1.4rem;
+}
+
+.blog-header .logo-text {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.blog-header .nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.blog-header .nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.blog-header .nav a:hover {
+    color: var(--primary);
+}
+
+/* Blog Index */
+.blog-index {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.blog-index h1 {
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    margin-bottom: 8px;
+}
+
+.blog-index .subtitle {
+    color: var(--text-light);
+    font-size: 1.05rem;
+    margin-bottom: 48px;
+}
+
+.blog-cards {
+    display: grid;
+    gap: 32px;
+}
+
+.blog-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 28px;
+    padding: 28px;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.25s, transform 0.25s;
+}
+
+.blog-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.blog-card-image {
+    width: 200px;
+    height: 160px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.blog-card-image .card-emoji {
+    font-size: 4rem;
+}
+
+.blog-card-content h2 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: var(--text);
+    line-height: 1.35;
+}
+
+.blog-card-content .card-excerpt {
+    color: var(--text-light);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.blog-card-content .card-meta {
+    font-size: 0.8rem;
+    color: var(--text-lighter);
+    display: flex;
+    gap: 16px;
+}
+
+/* Article Layout */
+.article-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.article-breadcrumb {
+    font-size: 0.85rem;
+    color: var(--text-lighter);
+    margin-bottom: 24px;
+}
+
+.article-breadcrumb a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.article-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.article-hero {
+    margin-bottom: 40px;
+}
+
+.article-hero h1 {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+.article-meta {
+    display: flex;
+    gap: 20px;
+    color: var(--text-lighter);
+    font-size: 0.88rem;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.article-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.article-hero-image {
+    width: 100%;
+    height: 340px;
+    background: var(--bg-light);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    margin-bottom: 8px;
+}
+
+/* Article Content */
+.article-content {
+    font-size: 1.02rem;
+    line-height: 1.8;
+    color: var(--text);
+}
+
+.article-content h2 {
+    font-family: var(--font-serif);
+    font-size: 1.55rem;
+    margin: 40px 0 16px;
+    color: var(--text);
+}
+
+.article-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.article-content p {
+    margin-bottom: 18px;
+}
+
+.article-content ul,
+.article-content ol {
+    margin: 0 0 20px 24px;
+}
+
+.article-content li {
+    margin-bottom: 8px;
+}
+
+.article-content strong {
+    color: var(--text);
+}
+
+.article-content blockquote {
+    border-left: 3px solid var(--primary);
+    padding: 16px 24px;
+    margin: 24px 0;
+    background: var(--primary-bg);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-style: italic;
+    color: var(--text-light);
+}
+
+.article-content .highlight-box {
+    background: var(--bg-light);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin: 28px 0;
+}
+
+.article-content .highlight-box h3 {
+    margin-top: 0;
+    color: var(--primary-dark);
+}
+
+.article-content .pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 0.95rem;
+}
+
+.article-content .pricing-table th,
+.article-content .pricing-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.article-content .pricing-table th {
+    background: var(--bg-light);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+.article-content .pricing-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* CTA Box */
+.article-cta {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 36px 32px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    margin: 40px 0;
+}
+
+.article-cta h3 {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.article-cta p {
+    opacity: 0.9;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.article-cta .btn-white {
+    display: inline-block;
+    background: white;
+    color: var(--primary-dark);
+    padding: 12px 32px;
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.article-cta .btn-white:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* Related Articles */
+.related-articles {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+}
+
+.related-articles h2 {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.related-card {
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.related-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.related-card h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: var(--text);
+    line-height: 1.35;
+}
+
+.related-card p {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Blog Footer */
+.blog-footer {
+    background: var(--bg-dark);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 0.88rem;
+}
+
+.blog-footer a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+}
+
+.blog-footer a:hover {
+    color: white;
+}
+
+.blog-footer p {
+    margin-bottom: 8px;
+}
+
+.blog-footer .footer-links {
+    margin-top: 16px;
+}
+
+.blog-footer .footer-links a {
+    margin: 0 8px;
+}
+
+.blog-footer .footer-abn {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .blog-header {
+        padding: 16px 20px;
+    }
+
+    .blog-header .nav {
+        gap: 16px;
+    }
+
+    .blog-index h1 {
+        font-size: 1.8rem;
+    }
+
+    .blog-card {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .blog-card-image {
+        width: 100%;
+        height: 140px;
+    }
+
+    .article-hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .article-hero-image {
+        height: 200px;
+        font-size: 4rem;
+    }
+
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .article-cta {
+        padding: 28px 20px;
+    }
+}
