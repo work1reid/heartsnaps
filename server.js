@@ -37,9 +37,9 @@ const PRICING = {
         tier3: { min: 12, max: 19, pricePerUnit: 850 }
     },
     wedding: {
-        tier1: { min: 20, max: 49, pricePerUnit: 900 },  // $9.00 each
-        tier2: { min: 50, max: 99, pricePerUnit: 800 },  // $8.00 each
-        tier3: { min: 100, max: 999, pricePerUnit: 850 } // $8.50 each (quote-based floor)
+        tier1: { min: 20, max: 49, pricePerUnit: 750 },  // $7.50 each
+        tier2: { min: 50, max: 99, pricePerUnit: 700 },  // $7.00 each
+        tier3: { min: 100, max: 999, pricePerUnit: 650 } // $6.50 each
     },
     shipping: 800,  // $8 flat rate
     freeShippingThreshold: 35000, // Free shipping for orders over $350
@@ -582,13 +582,18 @@ app.post('/api/orders', async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        // Server-side quantity cap
+        if (quantity < 1 || quantity > 200) {
+            return res.status(400).json({ error: 'Quantity must be between 1 and 200. For larger orders, please email us for a quote.' });
+        }
+
         if (shippingType === 'delivery' && !shippingAddress) {
             return res.status(400).json({ error: 'Shipping address required for delivery' });
         }
 
         // Calculate pricing
         const subtotal = calculatePrice(quantity, productType);
-        // Free shipping for orders over $200 or pickup
+        // Free shipping for orders over $350 or pickup
         const shippingCost = shippingType === 'pickup' ? 0 :
             (subtotal >= PRICING.freeShippingThreshold ? 0 : PRICING.shipping);
         let discountAmount = 0;
@@ -612,6 +617,12 @@ app.post('/api/orders', async (req, res) => {
                 }
                 promoCodeId = promo.id;
                 promoCodeUsed = promo.code;
+
+                // Increment promo code usage counter
+                await supabaseAdmin
+                    .from('promo_codes')
+                    .update({ uses_count: (promo.uses_count || 0) + 1 })
+                    .eq('id', promo.id);
             }
         }
 
@@ -808,7 +819,14 @@ app.post('/api/create-checkout', async (req, res) => {
 });
 
 // Look up customer by email/phone
-app.post('/api/customer/lookup', async (req, res) => {
+// Strict rate limit for customer lookup (PII endpoint)
+const lookupLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 5,
+    message: { error: 'Too many lookup attempts, please try again later.' }
+});
+
+app.post('/api/customer/lookup', lookupLimiter, async (req, res) => {
     const { email, phone } = req.body;
 
     if (!email && !phone) {

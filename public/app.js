@@ -2,6 +2,17 @@
 // HEARTSNAPS - FRONTEND APPLICATION
 // =============================================================================
 
+// Toast notification system
+function showToast(message, type = 'info', duration = 4000) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'toast show' + (type !== 'info' ? ' ' + type : '');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+        toast.className = 'toast';
+    }, duration);
+}
+
 let supabaseClient = null;
 let stripe = null;
 let currentUser = null;
@@ -73,7 +84,7 @@ async function initApp() {
             const orderId = params.get('order');
             if (orderId) {
                 orderState.orderId = orderId;
-                alert('Payment was cancelled. You can try again.');
+                showToast('Payment was cancelled. You can try again.', 'error');
             }
         }
 
@@ -172,8 +183,8 @@ function saveDetailsAndContinue() {
     const email = document.getElementById('customer-email').value.trim();
     const shippingType = document.querySelector('input[name="shipping-type"]:checked').value;
 
-    if (!name || !phone) {
-        alert('Please fill in your name and phone number.');
+    if (!name || !phone || !email) {
+        showToast('Please fill in your name, phone number and email.', 'error');
         return;
     }
 
@@ -184,7 +195,7 @@ function saveDetailsAndContinue() {
         const postcode = document.getElementById('address-postcode').value.trim();
 
         if (!line1 || !city || !state || !postcode) {
-            alert('Please fill in your delivery address.');
+            showToast('Please fill in your delivery address.', 'error');
             return;
         }
 
@@ -252,7 +263,16 @@ function updatePriceSummary() {
     const qty = orderState.quantity;
     let pricePerUnit, tierLabel;
 
-    if (qty >= 12) {
+    if (qty >= 100) {
+        pricePerUnit = 6.50;
+        tierLabel = '$6.50 each (bulk rate)';
+    } else if (qty >= 50) {
+        pricePerUnit = 7.00;
+        tierLabel = '$7.00 each (bulk rate)';
+    } else if (qty >= 20) {
+        pricePerUnit = 7.50;
+        tierLabel = '$7.50 each (bulk rate)';
+    } else if (qty >= 12) {
         pricePerUnit = 8.50;
         tierLabel = '$8.50 each (12-pack rate)';
     } else if (qty >= 6) {
@@ -298,18 +318,18 @@ function handleFiles(files) {
     const remaining = orderState.quantity - orderState.photos.length;
 
     if (remaining <= 0) {
-        alert(`You've already added ${orderState.quantity} photos.`);
+        showToast(`You've already added ${orderState.quantity} photos.`, 'error');
         return;
     }
 
     const validFiles = [];
     for (const file of Array.from(files).slice(0, remaining)) {
         if (!file.type.startsWith('image/')) {
-            alert(`${file.name} is not an image file.`);
+            showToast(`${file.name} is not an image file.`, 'error');
             continue;
         }
         if (file.size > 10 * 1024 * 1024) {
-            alert(`${file.name} is too large. Maximum size is 10MB.`);
+            showToast(`${file.name} is too large. Max 10MB.`, 'error');
             continue;
         }
         validFiles.push(file);
@@ -429,6 +449,12 @@ function closeCropModal() {
     const modal = document.getElementById('crop-modal');
     modal.classList.remove('active');
 
+    // Revoke blob URL to prevent memory leak
+    const cropImage = document.getElementById('crop-image');
+    if (cropImage.src && cropImage.src.startsWith('blob:')) {
+        URL.revokeObjectURL(cropImage.src);
+    }
+
     if (cropper) {
         cropper.destroy();
         cropper = null;
@@ -445,6 +471,10 @@ function recropPhoto(index) {
 
 function updateUploadUI() {
     const container = document.getElementById('photo-previews');
+    // Revoke old blob URLs before clearing
+    container.querySelectorAll('img').forEach(img => {
+        if (img.src && img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
+    });
     container.innerHTML = '';
 
     orderState.photos.forEach((blob, index) => {
@@ -593,6 +623,9 @@ async function applyPromoCode() {
 
 function calculateSubtotal() {
     const qty = orderState.quantity;
+    if (qty >= 100) return qty * 6.50;
+    if (qty >= 50) return qty * 7.00;
+    if (qty >= 20) return qty * 7.50;
     if (qty >= 12) return qty * 8.50;
     if (qty >= 6) return qty * 9.50;
     return qty * 12;
@@ -690,7 +723,7 @@ async function proceedToCheckout() {
 
     } catch (err) {
         console.error('Checkout error:', err);
-        alert('Something went wrong: ' + err.message);
+        showToast('Something went wrong: ' + err.message, 'error');
         checkoutBtn.disabled = false;
         checkoutBtn.textContent = 'Proceed to Payment';
     }
@@ -718,7 +751,7 @@ async function signInWithGoogle() {
 
     if (error) {
         console.error('Sign in error:', error);
-        alert('Sign in failed: ' + error.message);
+        showToast('Sign in failed: ' + error.message, 'error');
     }
 }
 
@@ -820,6 +853,37 @@ async function loadGallery() {
         console.error('Gallery load error:', err);
         // Keep placeholder images on error
     }
+}
+
+// =============================================================================
+// PROMO CODE TOGGLE
+// =============================================================================
+
+function togglePromoField() {
+    const field = document.getElementById('promo-field');
+    const toggle = document.getElementById('promo-toggle');
+    if (field.style.display === 'none') {
+        field.style.display = 'block';
+        toggle.style.display = 'none';
+    }
+}
+
+// =============================================================================
+// MOBILE NAVIGATION
+// =============================================================================
+
+function toggleMobileNav() {
+    const nav = document.getElementById('main-nav');
+    const hamburger = document.getElementById('hamburger');
+    nav.classList.toggle('open');
+    hamburger.classList.toggle('open');
+}
+
+function closeMobileNav() {
+    const nav = document.getElementById('main-nav');
+    const hamburger = document.getElementById('hamburger');
+    nav.classList.remove('open');
+    hamburger.classList.remove('open');
 }
 
 // Initialize price summary on load

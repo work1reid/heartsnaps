@@ -756,6 +756,12 @@ body {
     margin: 8px 0;
 }
 
+.footer-abn {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 12px;
+}
+
 /* =============================================================================
    ORDER FLOW
    ============================================================================= */
@@ -1601,6 +1607,155 @@ body {
 }
 
 /* =============================================================================
+   TOAST NOTIFICATIONS
+   ============================================================================= */
+
+.toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: var(--bg-dark);
+    color: white;
+    padding: 14px 24px;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    z-index: 2000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast.error {
+    background: var(--error);
+}
+
+.toast.success {
+    background: var(--success);
+}
+
+/* =============================================================================
+   HAMBURGER MENU
+   ============================================================================= */
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 101;
+}
+
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    transition: all 0.3s;
+}
+
+.hamburger.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.mobile-order-btn {
+    display: none;
+}
+
+/* =============================================================================
+   TRUST BADGES
+   ============================================================================= */
+
+.trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.trust-badge svg {
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+/* =============================================================================
+   PROMO TOGGLE
+   ============================================================================= */
+
+.promo-toggle {
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.promo-toggle:hover {
+    text-decoration: underline;
+}
+
+.promo-field {
+    margin-top: 12px;
+}
+
+/* =============================================================================
+   FOOTER SOCIAL
+   ============================================================================= */
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 12px 0;
+}
+
+.social-link {
+    color: var(--primary-light);
+    transition: color 0.2s;
+}
+
+.social-link:hover {
+    color: white;
+}
+
+/* =============================================================================
+   DELIVERY TIMEFRAME
+   ============================================================================= */
+
+.delivery-timeframe {
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* =============================================================================
    RESPONSIVE
    ============================================================================= */
 
@@ -1613,12 +1768,43 @@ body {
         font-size: 1rem;
     }
 
-    .nav {
-        gap: 12px;
+    .hamburger {
+        display: flex;
     }
 
-    .nav a {
+    .nav {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bg);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        z-index: 100;
+    }
+
+    .nav.open {
+        display: flex;
+    }
+
+    .nav.open a {
+        display: block;
+        font-size: 1.2rem;
+    }
+
+    .nav.open .mobile-order-btn {
+        display: block;
+        background: var(--primary);
+        color: white;
+        padding: 14px 32px;
+        border-radius: var(--radius);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
     }
 
     .pricing-card.featured {
@@ -1643,6 +1829,12 @@ body {
 
     .step-label {
         display: none;
+    }
+
+    .trust-badges {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
     }
 }
 
