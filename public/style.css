@@ -465,6 +465,59 @@ body {
 }
 
 /* =============================================================================
+   TESTIMONIALS
+   ============================================================================= */
+
+.testimonials-section {
+    background: var(--bg-light);
+    border-radius: var(--radius-lg);
+    margin: 40px auto;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: var(--bg);
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.testimonial-stars {
+    color: #f5a623;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+}
+
+.testimonial-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-style: italic;
+}
+
+.testimonial-author {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =============================================================================
    WEDDING SECTION
    ============================================================================= */
 
@@ -1265,6 +1318,60 @@ body {
     padding: 12px;
     border-radius: var(--radius);
     background: var(--bg-light);
+}
+
+/* =============================================================================
+   POLICY PAGES
+   ============================================================================= */
+
+.policy-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.policy-page h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.policy-page h2 {
+    font-size: 1.3rem;
+    text-align: left;
+    margin-top: 32px;
+    margin-bottom: 12px;
+}
+
+.policy-updated {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+}
+
+.policy-page p {
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+.policy-page ul {
+    margin-bottom: 16px;
+    padding-left: 24px;
+}
+
+.policy-page li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.policy-page a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.policy-page a:hover {
+    text-decoration: underline;
 }
 
 /* =============================================================================

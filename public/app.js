@@ -33,7 +33,6 @@ let orderState = {
 document.addEventListener('DOMContentLoaded', async () => {
     await initApp();
     setupEventListeners();
-    loadGallery();
 });
 
 async function initApp() {
