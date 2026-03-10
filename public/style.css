@@ -1801,6 +1801,17 @@ body {
     color: #c62828;
 }
 
+.photo-download-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.photo-download-actions .btn {
+    flex: 1;
+    font-size: 0.75rem;
+}
+
 @media (max-width: 768px) {
     .admin-layout {
         flex-direction: column;
@@ -1814,5 +1825,9 @@ body {
     .admin-nav {
         flex-direction: row;
         overflow-x: auto;
+    }
+
+    .photo-download-actions {
+        flex-direction: column;
     }
 }

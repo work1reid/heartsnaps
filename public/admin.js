@@ -370,7 +370,10 @@ function renderOrderModal(order) {
                         </div>
                     `).join('')}
                 </div>
-                <button class="btn" onclick="downloadPhotos('${order.id}')">Download All Photos (ZIP)</button>
+                <div class="photo-download-actions">
+                    <button class="btn" onclick="generatePrintSheet('${order.id}')">Download Print Sheet</button>
+                    <button class="btn btn-outline" onclick="downloadPhotos('${order.id}')">Download Photos (ZIP)</button>
+                </div>
             </div>
         </div>
 
@@ -516,6 +519,133 @@ async function saveAdminNotes(orderId) {
 
 function downloadPhotos(orderId) {
     window.open(`/api/admin/orders/${orderId}/download?token=${authToken}`, '_blank');
+}
+
+// =============================================================================
+// PRINT SHEET GENERATOR
+// =============================================================================
+
+async function generatePrintSheet(orderId) {
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
+
+    try {
+        // Fetch order with photo URLs
+        const order = await apiCall(`/api/admin/orders/${orderId}`);
+        const items = order.items || [];
+
+        if (items.length === 0) {
+            alert('No photos found for this order.');
+            return;
+        }
+
+        // A4 at 300 DPI
+        const PAGE_W = 2480;  // 210mm
+        const PAGE_H = 3508;  // 297mm
+        const MAGNET_PX = 750; // 63.5mm at 300 DPI
+
+        // Grid: 2 columns, 3 rows per page
+        const COLS = 2;
+        const ROWS = 3;
+        const PER_PAGE = COLS * ROWS;
+
+        // Calculate cell and margin sizes
+        const CELL_W = Math.floor(PAGE_W / COLS);  // 1240
+        const CELL_H = Math.floor(PAGE_H / ROWS);  // 1169
+
+        // Center magnet in each cell
+        const OFFSET_X = Math.floor((CELL_W - MAGNET_PX) / 2);
+        const OFFSET_Y = Math.floor((CELL_H - MAGNET_PX) / 2);
+
+        // Load all images first
+        const images = await Promise.all(items.map(item => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error(`Failed to load photo ${item.position}`));
+                img.src = item.previewUrl;
+            });
+        }));
+
+        // Generate pages
+        const totalPages = Math.ceil(images.length / PER_PAGE);
+
+        for (let page = 0; page < totalPages; page++) {
+            const canvas = document.createElement('canvas');
+            canvas.width = PAGE_W;
+            canvas.height = PAGE_H;
+            const ctx = canvas.getContext('2d');
+
+            // White background
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+
+            // Draw dashed cut lines
+            ctx.strokeStyle = '#999999';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([12, 8]);
+
+            // Vertical line (center)
+            ctx.beginPath();
+            ctx.moveTo(CELL_W, 0);
+            ctx.lineTo(CELL_W, PAGE_H);
+            ctx.stroke();
+
+            // Horizontal lines
+            for (let r = 1; r < ROWS; r++) {
+                ctx.beginPath();
+                ctx.moveTo(0, CELL_H * r);
+                ctx.lineTo(PAGE_W, CELL_H * r);
+                ctx.stroke();
+            }
+
+            ctx.setLineDash([]);
+
+            // Draw photos in grid
+            const startIdx = page * PER_PAGE;
+            const endIdx = Math.min(startIdx + PER_PAGE, images.length);
+
+            for (let i = startIdx; i < endIdx; i++) {
+                const gridIdx = i - startIdx;
+                const col = gridIdx % COLS;
+                const row = Math.floor(gridIdx / COLS);
+
+                const x = col * CELL_W + OFFSET_X;
+                const y = row * CELL_H + OFFSET_Y;
+
+                const img = images[i];
+
+                // Draw the photo scaled to fill the magnet square
+                const srcSize = Math.min(img.naturalWidth, img.naturalHeight);
+                const srcX = (img.naturalWidth - srcSize) / 2;
+                const srcY = (img.naturalHeight - srcSize) / 2;
+
+                ctx.drawImage(img, srcX, srcY, srcSize, srcSize, x, y, MAGNET_PX, MAGNET_PX);
+            }
+
+            // Download
+            const link = document.createElement('a');
+            const pageLabel = totalPages > 1 ? `_page${page + 1}` : '';
+            link.download = `Heartsnaps_${order.order_number}${pageLabel}_PrintSheet.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            // Small delay between pages so browser handles multiple downloads
+            if (page < totalPages - 1) {
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
+
+    } catch (err) {
+        console.error('Print sheet error:', err);
+        alert('Failed to generate print sheet: ' + err.message);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
 }
 
 // =============================================================================
