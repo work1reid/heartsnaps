@@ -96,7 +96,9 @@ function setupEventListeners() {
         uploadZone.classList.remove('drag-over');
         handleFiles(e.dataTransfer.files);
     });
-    uploadZone.addEventListener('click', () => {
+    uploadZone.addEventListener('click', (e) => {
+        // Don't open file picker if clicking the Choose Files button (it handles its own click)
+        if (e.target.closest('button') || e.target.closest('input')) return;
         document.getElementById('file-input').click();
     });
 
@@ -576,18 +578,15 @@ async function signInWithGoogle() {
 }
 
 function updateAuthUI() {
-    const navBtn = document.querySelector('.nav .btn');
+    const navBtn = document.getElementById('nav-account-btn');
     if (currentUser) {
         navBtn.textContent = 'Account';
-        navBtn.onclick = () => {
-            // Could show account menu
-            if (confirm('Sign out?')) {
-                supabaseClient.auth.signOut();
-            }
-        };
+        navBtn.href = 'account.html';
+        navBtn.onclick = null;
     } else {
         navBtn.textContent = 'Sign In';
-        navBtn.onclick = showAuthModal;
+        navBtn.href = '#';
+        navBtn.onclick = (e) => { e.preventDefault(); showAuthModal(); };
     }
 }
 
