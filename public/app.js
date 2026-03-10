@@ -245,14 +245,14 @@ function updatePriceSummary() {
     let pricePerUnit, tierLabel;
 
     if (qty >= 12) {
-        pricePerUnit = 7;
-        tierLabel = '$7 each (12-pack rate)';
+        pricePerUnit = 8.50;
+        tierLabel = '$8.50 each (12-pack rate)';
     } else if (qty >= 6) {
-        pricePerUnit = 8;
-        tierLabel = '$8 each (6-pack rate)';
+        pricePerUnit = 9.50;
+        tierLabel = '$9.50 each (6-pack rate)';
     } else {
-        pricePerUnit = 10;
-        tierLabel = '$10 each';
+        pricePerUnit = 12;
+        tierLabel = '$12 each';
     }
 
     const subtotal = qty * pricePerUnit;
@@ -447,9 +447,9 @@ async function applyPromoCode() {
 
 function calculateSubtotal() {
     const qty = orderState.quantity;
-    if (qty >= 12) return qty * 7;
-    if (qty >= 6) return qty * 8;
-    return qty * 10;
+    if (qty >= 12) return qty * 8.50;
+    if (qty >= 6) return qty * 9.50;
+    return qty * 12;
 }
 
 function updateOrderSummary() {

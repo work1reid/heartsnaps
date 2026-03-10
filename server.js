@@ -27,22 +27,22 @@ const OWNER_EMAILS = (process.env.OWNER_EMAILS || '').split(',').map(e => e.trim
 // Pricing configuration (in cents)
 const PRICING = {
     personal: {
-        tier1: { min: 1, max: 5, pricePerUnit: 1000 },   // $10 each
-        tier2: { min: 6, max: 11, pricePerUnit: 800 },   // $8 each
-        tier3: { min: 12, max: 19, pricePerUnit: 700 }   // $7 each
+        tier1: { min: 1, max: 5, pricePerUnit: 1200 },   // $12 each
+        tier2: { min: 6, max: 11, pricePerUnit: 950 },   // $9.50 each
+        tier3: { min: 12, max: 19, pricePerUnit: 850 }   // $8.50 each
     },
     business: {
-        tier1: { min: 1, max: 5, pricePerUnit: 1000 },
-        tier2: { min: 6, max: 11, pricePerUnit: 800 },
-        tier3: { min: 12, max: 19, pricePerUnit: 700 }
+        tier1: { min: 1, max: 5, pricePerUnit: 1200 },
+        tier2: { min: 6, max: 11, pricePerUnit: 950 },
+        tier3: { min: 12, max: 19, pricePerUnit: 850 }
     },
     wedding: {
-        tier1: { min: 20, max: 49, pricePerUnit: 650 },  // $6.50 each
-        tier2: { min: 50, max: 99, pricePerUnit: 550 },  // $5.50 each
-        tier3: { min: 100, max: 999, pricePerUnit: 500 } // $5.00 each
+        tier1: { min: 20, max: 49, pricePerUnit: 900 },  // $9.00 each
+        tier2: { min: 50, max: 99, pricePerUnit: 800 },  // $8.00 each
+        tier3: { min: 100, max: 999, pricePerUnit: 850 } // $8.50 each (quote-based floor)
     },
     shipping: 800,  // $8 flat rate
-    freeShippingThreshold: 20000, // Free shipping for orders over $200
+    freeShippingThreshold: 35000, // Free shipping for orders over $350
     freePickupLocation: 'Forbes NSW'
 };
 
@@ -362,22 +362,22 @@ app.get('/api/config', (req, res) => {
 app.get('/api/pricing', (req, res) => {
     res.json({
         personal: [
-            { min: 1, max: 5, price: 10.00, label: '$10 each' },
-            { min: 6, max: 11, price: 8.00, label: '$8 each (6-pack)' },
-            { min: 12, max: 19, price: 7.00, label: '$7 each (12-pack)' }
+            { min: 1, max: 5, price: 12.00, label: '$12 each' },
+            { min: 6, max: 11, price: 9.50, label: '$9.50 each (6-pack)' },
+            { min: 12, max: 19, price: 8.50, label: '$8.50 each (12-pack)' }
         ],
         business: [
-            { min: 1, max: 5, price: 10.00, label: '$10 each' },
-            { min: 6, max: 11, price: 8.00, label: '$8 each (6-pack)' },
-            { min: 12, max: 19, price: 7.00, label: '$7 each (12-pack)' }
+            { min: 1, max: 5, price: 12.00, label: '$12 each' },
+            { min: 6, max: 11, price: 9.50, label: '$9.50 each (6-pack)' },
+            { min: 12, max: 19, price: 8.50, label: '$8.50 each (12-pack)' }
         ],
         wedding: [
-            { min: 20, max: 49, price: 6.50, label: '$6.50 each (20-49)' },
-            { min: 50, max: 99, price: 5.50, label: '$5.50 each (50-99)' },
-            { min: 100, max: 999, price: 5.00, label: '$5.00 each (100+)' }
+            { min: 20, max: 49, price: 9.00, label: '$9.00 each (20-49)' },
+            { min: 50, max: 99, price: 8.00, label: '$8.00 each (50-99)' },
+            { min: 100, max: 999, price: 8.50, label: 'Contact us for 100+' }
         ],
         shipping: 8.00,
-        freeShippingThreshold: 20000, // $200 in cents - free shipping for wedding orders over $200
+        freeShippingThreshold: 35000, // $350 in cents - free shipping for wedding orders over $350
         freePickupLocation: 'Forbes NSW'
     });
 });
