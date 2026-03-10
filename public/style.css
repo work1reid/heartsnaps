@@ -3,23 +3,25 @@
    ============================================================================= */
 
 :root {
-    --primary: #e91e63;
-    --primary-dark: #c2185b;
-    --primary-light: #f8bbd9;
-    --text: #1a1a1a;
-    --text-light: #666;
-    --text-lighter: #999;
-    --bg: #ffffff;
-    --bg-light: #f5f5f5;
-    --bg-dark: #1a1a1a;
-    --border: #e0e0e0;
-    --success: #4caf50;
-    --error: #f44336;
-    --warning: #ff9800;
-    --shadow: 0 2px 8px rgba(0,0,0,0.1);
-    --shadow-lg: 0 4px 20px rgba(0,0,0,0.15);
-    --radius: 8px;
-    --radius-lg: 16px;
+    --primary: #A0566A;
+    --primary-dark: #8A4459;
+    --primary-light: #D4A0B0;
+    --primary-bg: rgba(160, 86, 106, 0.06);
+    --text: #2C2420;
+    --text-light: #6B5E57;
+    --text-lighter: #9B8E87;
+    --bg: #FDF8F5;
+    --bg-light: #F5EDE8;
+    --bg-dark: #2C2420;
+    --border: #E8D8D0;
+    --success: #5A8A5E;
+    --error: #C25450;
+    --warning: #C4883A;
+    --shadow: 0 2px 12px rgba(44, 36, 32, 0.06);
+    --shadow-lg: 0 8px 32px rgba(44, 36, 32, 0.1);
+    --radius: 4px;
+    --radius-lg: 8px;
+    --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
 }
 
 * {
@@ -68,8 +70,9 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    font-family: var(--font-serif);
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--text);
     cursor: pointer;
 }
@@ -105,9 +108,11 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px 24px;
-    font-size: 1rem;
+    padding: 14px 28px;
+    font-size: 0.85rem;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
@@ -139,13 +144,14 @@ body {
 
 .btn-outline {
     background: transparent;
-    border: 2px solid var(--border);
-    color: var(--text);
+    border: 2px solid var(--primary);
+    color: var(--primary);
 }
 
 .btn-outline:hover {
-    background: var(--bg-light);
-    border-color: var(--text-light);
+    background: var(--primary-bg);
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
 }
 
 .btn-google {
@@ -169,15 +175,17 @@ body {
 
 .hero {
     text-align: center;
-    padding: 80px 24px;
-    background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);
+    padding: 100px 24px 80px;
+    background: var(--bg);
 }
 
 .hero h1 {
-    font-size: 3rem;
-    font-weight: 700;
+    font-family: var(--font-serif);
+    font-size: 3.2rem;
+    font-weight: 600;
     margin-bottom: 16px;
     color: var(--text);
+    letter-spacing: -0.01em;
 }
 
 .hero-subtitle {
@@ -198,9 +206,12 @@ body {
 }
 
 .section h2 {
+    font-family: var(--font-serif);
     font-size: 2rem;
+    font-weight: 600;
     text-align: center;
     margin-bottom: 40px;
+    color: var(--text);
 }
 
 /* =============================================================================
@@ -236,12 +247,19 @@ body {
     color: var(--primary);
 }
 
+.handmade-svg {
+    width: 20px;
+    height: 20px;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
 /* =============================================================================
    PROCESS SECTION
    ============================================================================= */
 
 .process-section {
-    background: linear-gradient(135deg, #fff5f8 0%, #fff 100%);
+    background: var(--bg-light);
     border-radius: var(--radius-lg);
     margin: 40px auto;
 }
@@ -349,8 +367,8 @@ body {
 }
 
 .pricing-card {
-    background: var(--bg);
-    border: 2px solid var(--border);
+    background: white;
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 32px;
     text-align: center;
@@ -422,6 +440,12 @@ body {
 .feature-icon {
     font-size: 3rem;
     margin-bottom: 16px;
+    color: var(--primary);
+}
+
+.feature-icon svg {
+    width: 40px;
+    height: 40px;
 }
 
 .feature h3 {
@@ -437,9 +461,17 @@ body {
    ============================================================================= */
 
 .story-section {
-    background: linear-gradient(135deg, #fff5f8 0%, #fff 100%);
-    border-radius: var(--radius-lg);
-    margin: 40px auto;
+    background: var(--bg-dark);
+    color: #F5EDE8;
+    border-radius: 0;
+    margin: 0;
+    max-width: 100%;
+    padding: 80px 24px;
+}
+
+.story-section h2 {
+    color: #F5EDE8;
+    font-family: var(--font-serif);
 }
 
 .story-content {
@@ -452,16 +484,22 @@ body {
 }
 
 .story-lead {
+    font-family: var(--font-serif);
     font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--primary);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--primary-light);
     margin-bottom: 24px;
 }
 
 .story-text p {
     margin-bottom: 16px;
     line-height: 1.8;
-    color: var(--text);
+    color: #D4C8C2;
+}
+
+.story-text p strong {
+    color: #F5EDE8;
 }
 
 /* =============================================================================
@@ -483,18 +521,23 @@ body {
 }
 
 .testimonial-card {
-    background: var(--bg);
+    background: white;
     padding: 28px;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    border: none;
+    border-left: 3px solid var(--primary);
+    box-shadow: none;
 }
 
 .testimonial-stars {
-    color: #f5a623;
-    font-size: 1.2rem;
+    color: #C4883A;
+    font-size: 1.1rem;
     margin-bottom: 12px;
     letter-spacing: 2px;
+}
+
+.testimonial-stars .star-empty {
+    color: var(--border);
 }
 
 .testimonial-text {
@@ -508,7 +551,13 @@ body {
 .testimonial-author {
     font-weight: 600;
     font-size: 0.9rem;
-    color: var(--primary);
+    color: var(--text);
+}
+
+.testimonial-location {
+    font-size: 0.8rem;
+    color: var(--text-lighter);
+    margin-top: 2px;
 }
 
 @media (max-width: 768px) {
@@ -543,6 +592,7 @@ body {
 }
 
 .wedding-info h3 {
+    font-family: var(--font-serif);
     font-size: 1.1rem;
     margin-bottom: 12px;
     color: var(--primary);
@@ -596,7 +646,7 @@ body {
 
 .bulk-card.featured {
     border-color: var(--primary);
-    background: #fff5f8;
+    background: var(--primary-bg);
 }
 
 .bulk-card .badge {
@@ -680,6 +730,10 @@ body {
     background: var(--bg-light);
     border-radius: var(--radius-lg);
     padding: 60px 24px;
+}
+
+.cta-section h2 {
+    font-family: var(--font-serif);
 }
 
 /* =============================================================================
@@ -778,6 +832,7 @@ body {
 }
 
 .order-step h2 {
+    font-family: var(--font-serif);
     text-align: center;
     margin-bottom: 32px;
 }
@@ -886,7 +941,7 @@ body {
 
 .product-card.selected {
     border-color: var(--primary);
-    background: #fce4ec;
+    background: var(--primary-bg);
 }
 
 .product-card input {
@@ -1051,7 +1106,7 @@ body {
 .upload-zone:hover,
 .upload-zone.drag-over {
     border-color: var(--primary);
-    background: #fce4ec;
+    background: var(--primary-bg);
 }
 
 .upload-icon {
@@ -1331,12 +1386,14 @@ body {
 }
 
 .policy-page h1 {
+    font-family: var(--font-serif);
     font-size: 2rem;
     margin-bottom: 8px;
     text-align: left;
 }
 
 .policy-page h2 {
+    font-family: var(--font-serif);
     font-size: 1.3rem;
     text-align: left;
     margin-top: 32px;
@@ -1380,7 +1437,7 @@ body {
 
 @media (max-width: 768px) {
     .hero h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
 
     .hero-subtitle {
