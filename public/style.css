@@ -1126,59 +1126,230 @@ body {
     margin-top: 16px;
 }
 
-.photo-previews {
+/* =============================================================================
+   MAGNET MOCKUP PREVIEWS
+   ============================================================================= */
+
+.magnet-previews {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px;
     margin-top: 24px;
 }
 
-.photo-preview {
+.magnet-mockup {
     position: relative;
-    aspect-ratio: 1;
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--bg-light);
-    border: 2px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.photo-preview img {
+.magnet-frame {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow:
+        0 2px 8px rgba(44, 36, 32, 0.15),
+        0 1px 3px rgba(44, 36, 32, 0.1),
+        inset 0 0 0 1px rgba(255,255,255,0.1);
+    transform: rotate(-1.5deg);
+    transition: transform 0.2s;
+}
+
+.magnet-mockup:nth-child(even) .magnet-frame {
+    transform: rotate(1.5deg);
+}
+
+.magnet-mockup:nth-child(3n) .magnet-frame {
+    transform: rotate(-0.5deg);
+}
+
+.magnet-mockup:hover .magnet-frame {
+    transform: rotate(0deg) scale(1.03);
+}
+
+.magnet-frame img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
-.photo-preview .remove-btn {
+/* Gloss overlay */
+.magnet-frame::after {
+    content: '';
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.25) 0%,
+        rgba(255,255,255,0.05) 40%,
+        transparent 60%
+    );
+    pointer-events: none;
 }
 
-.photo-preview .photo-number {
+.magnet-mockup .remove-btn {
     position: absolute;
-    bottom: 8px;
-    left: 8px;
-    background: var(--primary);
-    color: white;
+    top: -6px;
+    right: calc(50% - 76px);
     width: 24px;
     height: 24px;
     border-radius: 50%;
+    background: var(--bg-dark);
+    color: white;
+    border: 2px solid var(--bg);
+    cursor: pointer;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.magnet-mockup:hover .remove-btn {
+    opacity: 1;
+}
+
+.magnet-mockup .magnet-number {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: var(--text-lighter);
+    font-weight: 500;
+}
+
+.magnet-mockup .recrop-btn {
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.magnet-mockup .recrop-btn:hover {
+    color: var(--primary-dark);
+}
+
+/* =============================================================================
+   CROP MODAL
+   ============================================================================= */
+
+.crop-modal-content {
+    background: var(--bg);
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.crop-header {
+    padding: 24px 24px 16px;
+    text-align: center;
+}
+
+.crop-header h2 {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+}
+
+.crop-subtitle {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.crop-container {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+    background: #1a1a1a;
+}
+
+.crop-container img {
+    display: block;
+    max-width: 100%;
+}
+
+.crop-actions {
+    display: flex;
+    gap: 12px;
+    padding: 20px 24px;
+}
+
+.crop-actions .btn {
+    flex: 1;
+}
+
+.crop-hint {
+    text-align: center;
+    color: var(--text-lighter);
     font-size: 0.8rem;
-    font-weight: 600;
+    padding: 0 24px 16px;
+    margin-top: -8px;
+}
+
+/* Cropper.js theme overrides */
+.cropper-view-box {
+    outline: 2px solid var(--primary);
+    outline-color: var(--primary);
+}
+
+.cropper-line {
+    background-color: var(--primary);
+}
+
+.cropper-point {
+    background-color: var(--primary);
+}
+
+.cropper-modal {
+    background-color: #1a1a1a;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .magnet-previews {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 16px;
+    }
+
+    .magnet-frame {
+        width: 110px;
+        height: 110px;
+    }
+
+    .magnet-mockup .remove-btn {
+        opacity: 1;
+        right: calc(50% - 61px);
+    }
+
+    .crop-modal-content {
+        max-width: 100%;
+        border-radius: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .crop-container {
+        flex: 1;
+        max-height: none;
+    }
+
+    .crop-actions {
+        padding: 16px;
+    }
 }
 
 .upload-progress {
@@ -1216,22 +1387,20 @@ body {
 }
 
 .review-magnets {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
-.review-magnet {
-    aspect-ratio: 1;
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
+.review-magnet-mockup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.review-magnet img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.review-magnet-mockup .magnet-frame {
+    width: 90px;
+    height: 90px;
 }
 
 .review-details {

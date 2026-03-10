@@ -16,7 +16,8 @@ let orderState = {
     shippingAddress: null,
     productType: 'personal',
     quantity: 6,
-    photos: [],
+    photos: [],        // cropped Blob objects
+    photoOriginals: [], // original File objects (for re-cropping)
     uploadedPhotos: [],
     isGift: false,
     giftMessage: '',
@@ -25,6 +26,12 @@ let orderState = {
     promoDiscount: 0,
     orderId: null
 };
+
+// Crop state
+let cropper = null;
+let cropQueue = [];      // files waiting to be cropped
+let cropResolve = null;  // promise resolver for current crop
+let recropIndex = -1;    // index being re-cropped (-1 = new photo)
 
 // =============================================================================
 // INITIALIZATION
@@ -283,6 +290,8 @@ function updatePriceSummary() {
 
 function handleFileSelect(event) {
     handleFiles(event.target.files);
+    // Reset file input so the same file can be re-selected
+    event.target.value = '';
 }
 
 function handleFiles(files) {
@@ -293,35 +302,160 @@ function handleFiles(files) {
         return;
     }
 
-    const filesToAdd = Array.from(files).slice(0, remaining);
-
-    for (const file of filesToAdd) {
+    const validFiles = [];
+    for (const file of Array.from(files).slice(0, remaining)) {
         if (!file.type.startsWith('image/')) {
             alert(`${file.name} is not an image file.`);
             continue;
         }
-
         if (file.size > 10 * 1024 * 1024) {
             alert(`${file.name} is too large. Maximum size is 10MB.`);
             continue;
         }
-
-        orderState.photos.push(file);
+        validFiles.push(file);
     }
 
-    updateUploadUI();
+    if (validFiles.length > 0) {
+        recropIndex = -1;
+        cropQueue = [...validFiles];
+        processNextCrop();
+    }
+}
+
+function processNextCrop() {
+    if (cropQueue.length === 0) return;
+
+    const file = cropQueue.shift();
+    openCropModal(file);
+}
+
+function openCropModal(file) {
+    const modal = document.getElementById('crop-modal');
+    const cropImage = document.getElementById('crop-image');
+
+    // Destroy previous cropper
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+
+    // Load image
+    const url = URL.createObjectURL(file);
+    cropImage.src = url;
+
+    // Store current file for reference
+    cropImage._currentFile = file;
+
+    modal.classList.add('active');
+
+    // Initialize Cropper.js once image loads
+    cropImage.onload = () => {
+        cropper = new Cropper(cropImage, {
+            aspectRatio: 1,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 0.85,
+            responsive: true,
+            restore: false,
+            guides: false,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false,
+        });
+    };
+}
+
+function applyCrop() {
+    if (!cropper) return;
+
+    const canvas = cropper.getCroppedCanvas({
+        width: 750,
+        height: 750,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+    });
+
+    canvas.toBlob((blob) => {
+        const file = document.getElementById('crop-image')._currentFile;
+
+        if (recropIndex >= 0) {
+            // Re-cropping existing photo
+            orderState.photos[recropIndex] = blob;
+            orderState.photoOriginals[recropIndex] = file;
+            recropIndex = -1;
+        } else {
+            // New photo
+            orderState.photos.push(blob);
+            orderState.photoOriginals.push(file);
+        }
+
+        closeCropModal();
+        updateUploadUI();
+
+        // Process next in queue
+        if (cropQueue.length > 0) {
+            setTimeout(processNextCrop, 200);
+        }
+    }, 'image/jpeg', 0.92);
+}
+
+function skipCrop() {
+    // Use full photo without cropping — still resize to 750x750 square (center crop)
+    if (!cropper) return;
+
+    // Use the cropper's full image data as a square crop
+    const imageData = cropper.getImageData();
+    const size = Math.min(imageData.naturalWidth, imageData.naturalHeight);
+
+    cropper.setCropBoxData({
+        left: (cropper.getContainerData().width - cropper.getCropBoxData().width) / 2,
+        top: (cropper.getContainerData().height - cropper.getCropBoxData().height) / 2,
+    });
+
+    // Set crop to cover entire image
+    cropper.setData({
+        x: (imageData.naturalWidth - size) / 2,
+        y: (imageData.naturalHeight - size) / 2,
+        width: size,
+        height: size,
+    });
+
+    applyCrop();
+}
+
+function closeCropModal() {
+    const modal = document.getElementById('crop-modal');
+    modal.classList.remove('active');
+
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+}
+
+function recropPhoto(index) {
+    recropIndex = index;
+    const originalFile = orderState.photoOriginals[index];
+    if (originalFile) {
+        openCropModal(originalFile);
+    }
 }
 
 function updateUploadUI() {
     const container = document.getElementById('photo-previews');
     container.innerHTML = '';
 
-    orderState.photos.forEach((file, index) => {
-        const preview = document.createElement('div');
-        preview.className = 'photo-preview';
+    orderState.photos.forEach((blob, index) => {
+        const mockup = document.createElement('div');
+        mockup.className = 'magnet-mockup';
+
+        const frame = document.createElement('div');
+        frame.className = 'magnet-frame';
 
         const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
+        img.src = URL.createObjectURL(blob);
 
         const removeBtn = document.createElement('button');
         removeBtn.className = 'remove-btn';
@@ -329,13 +463,20 @@ function updateUploadUI() {
         removeBtn.onclick = () => removePhoto(index);
 
         const number = document.createElement('div');
-        number.className = 'photo-number';
-        number.textContent = index + 1;
+        number.className = 'magnet-number';
+        number.textContent = `Magnet ${index + 1}`;
 
-        preview.appendChild(img);
-        preview.appendChild(removeBtn);
-        preview.appendChild(number);
-        container.appendChild(preview);
+        const recropBtn = document.createElement('button');
+        recropBtn.className = 'recrop-btn';
+        recropBtn.textContent = 'Re-crop';
+        recropBtn.onclick = () => recropPhoto(index);
+
+        frame.appendChild(img);
+        mockup.appendChild(removeBtn);
+        mockup.appendChild(frame);
+        mockup.appendChild(number);
+        mockup.appendChild(recropBtn);
+        container.appendChild(mockup);
     });
 
     // Update continue button state
@@ -354,6 +495,7 @@ function updateUploadUI() {
 
 function removePhoto(index) {
     orderState.photos.splice(index, 1);
+    orderState.photoOriginals.splice(index, 1);
     updateUploadUI();
 }
 
@@ -362,16 +504,19 @@ function removePhoto(index) {
 // =============================================================================
 
 function updateReviewPage() {
-    // Update magnet previews
+    // Update magnet previews with mockup style
     const magnetsContainer = document.getElementById('review-magnets');
     magnetsContainer.innerHTML = '';
-    orderState.photos.forEach((file, index) => {
-        const div = document.createElement('div');
-        div.className = 'review-magnet';
+    orderState.photos.forEach((blob, index) => {
+        const mockup = document.createElement('div');
+        mockup.className = 'review-magnet-mockup';
+        const frame = document.createElement('div');
+        frame.className = 'magnet-frame';
         const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        div.appendChild(img);
-        magnetsContainer.appendChild(div);
+        img.src = URL.createObjectURL(blob);
+        frame.appendChild(img);
+        mockup.appendChild(frame);
+        magnetsContainer.appendChild(mockup);
     });
 
     // Update delivery details

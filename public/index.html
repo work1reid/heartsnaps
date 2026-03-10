@@ -454,8 +454,8 @@
                     <p class="upload-note">JPG, PNG, WebP up to 10MB each</p>
                 </div>
 
-                <div class="photo-previews" id="photo-previews">
-                    <!-- Photo preview cards added here -->
+                <div class="magnet-previews" id="photo-previews">
+                    <!-- Magnet mockup preview cards added here -->
                 </div>
 
                 <div class="upload-progress" id="upload-progress" style="display:none">
@@ -580,8 +580,28 @@
         </div>
     </div>
 
+    <!-- Crop Modal -->
+    <div class="modal" id="crop-modal">
+        <div class="crop-modal-content">
+            <div class="crop-header">
+                <h2>Crop Your Photo</h2>
+                <p class="crop-subtitle">Adjust the square to frame your magnet</p>
+            </div>
+            <div class="crop-container">
+                <img id="crop-image" src="" alt="Crop preview">
+            </div>
+            <div class="crop-actions">
+                <button class="btn btn-outline" onclick="skipCrop()">Use Full Photo</button>
+                <button class="btn" onclick="applyCrop()">Crop & Add</button>
+            </div>
+            <p class="crop-hint">Pinch to zoom on mobile</p>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
     <script src="app.js"></script>
 </body>
 </html>
