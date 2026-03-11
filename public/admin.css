@@ -491,29 +491,147 @@
 
     .admin-sidebar {
         width: 100%;
-        padding: 16px;
+        padding: 12px 16px;
+    }
+
+    .admin-sidebar .logo {
+        margin-bottom: 12px;
     }
 
     .admin-nav {
         flex-direction: row;
         overflow-x: auto;
-        gap: 8px;
+        gap: 6px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+    }
+
+    .admin-nav::-webkit-scrollbar {
+        display: none;
     }
 
     .admin-nav a {
         white-space: nowrap;
-        padding: 8px 16px;
+        padding: 8px 14px;
+        font-size: 0.85rem;
     }
 
     .sidebar-footer {
         display: none;
     }
 
+    .admin-main {
+        padding: 16px;
+    }
+
+    .admin-header h1 {
+        font-size: 1.25rem;
+    }
+
+    /* Make tables horizontally scrollable */
+    #orders-table,
+    #customers-table,
+    #promos-table,
+    #admins-table,
+    #recent-orders {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+        min-width: 600px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Filter tabs scroll */
+    .filter-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .filter-tab {
+        flex-shrink: 0;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .stat-card .value {
+        font-size: 1.5rem;
+    }
+
+    /* Order modal */
+    .modal-large {
+        max-width: 100%;
+        margin: 8px;
+        max-height: 95vh;
+    }
+
     .order-modal-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .photo-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .status-update {
+        flex-direction: column;
+    }
+
+    .status-update select,
+    .status-update input {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .quick-actions .btn {
+        min-width: unset;
+        font-size: 0.8rem;
+        padding: 10px 14px;
+    }
+
+    /* Login card */
+    .login-card {
+        padding: 32px 24px;
+    }
+
+    /* Gallery */
+    .admin-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        gap: 4px;
+    }
+
+    .action-buttons .btn {
+        padding: 5px 8px;
+        font-size: 0.75rem;
+    }
+
+    /* Photo download actions */
+    .photo-download-actions {
+        flex-direction: column;
     }
 }
