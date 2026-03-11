@@ -199,8 +199,7 @@
     <section id="landing" class="screen active">
         <header class="header">
             <div class="logo">
-                <span class="logo-icon">&#10084;</span>
-                <span class="logo-text">Heartsnaps</span>
+                <img src="images/heartsnaps-logo.png" alt="HeartSnaps" class="logo-img">
             </div>
             <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
                 <span></span><span></span><span></span>
@@ -216,10 +215,19 @@
         </header>
 
         <div class="hero">
-            <h1>Memories That Stick</h1>
-            <p class="hero-subtitle">Custom photo magnets, handmade to order by the Reid family in Forbes, NSW. Every magnet is printed, cut and pressed by hand in our home.</p>
-            <button class="btn btn-large" onclick="startOrder()">Create Your Magnets</button>
-            <a href="wedding.html" class="btn btn-outline btn-large" style="margin-left: 12px;">Wedding & Bulk Orders</a>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Memories That Stick</h1>
+                    <p class="hero-subtitle">Custom photo magnets, handmade to order by the Reid family in Forbes, NSW. Every magnet is printed, cut and pressed by hand in our home.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-large" onclick="startOrder()">Create Your Magnets</button>
+                        <a href="wedding.html" class="btn btn-outline btn-large">Wedding & Bulk Orders</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="images/IMG_7894.JPG" alt="A finished HeartSnaps photo magnet on a wooden table" class="hero-photo">
+                </div>
+            </div>
         </div>
 
         <!-- Handmade Banner -->
@@ -236,6 +244,31 @@
                 <div class="handmade-item">
                     <svg class="handmade-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                     <span>From Our Home in Forbes, NSW</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Gallery -->
+        <div class="section gallery-section">
+            <h2>See Our Magnets</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="images/IMG_7894.JPG" alt="Finished photo magnet on wooden table" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="images/IMG_1666.jpeg" alt="Photo magnet being pressed in our handmade press" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="images/IMG_7891.JPG" alt="Photo magnets being printed on premium paper" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="images/IMG_1667.jpeg" alt="Close up of magnet press with wedding photo" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="images/IMG_7892.JPG" alt="Print sheets ready to be cut into magnets" loading="lazy">
+                </div>
+                <div class="gallery-item">
+                    <img src="images/IMG_1663.jpeg" alt="Magnet press machine close-up" loading="lazy">
                 </div>
             </div>
         </div>
@@ -271,6 +304,9 @@
         <div class="section story-section" id="our-story">
             <h2>The Heart Behind Heartsnaps</h2>
             <div class="story-content">
+                <div class="story-image">
+                    <img src="images/IMG_7893.jpg" alt="Our magnet press setup at home in Forbes, NSW" loading="lazy">
+                </div>
                 <div class="story-text">
                     <p class="story-lead">Every magnet is printed, cut and pressed by hand — made to order by the Reid family in Forbes, NSW.</p>
                     <p>After being diagnosed with a congenital heart condition that changed everything, I found myself unable to continue in my previous career. But sometimes life's biggest challenges lead to our greatest opportunities.</p>
@@ -457,8 +493,7 @@
     <section id="order-flow" class="screen">
         <header class="header">
             <div class="logo" onclick="showScreen('landing')">
-                <span class="logo-icon">&#10084;</span>
-                <span class="logo-text">Heartsnaps</span>
+                <img src="images/heartsnaps-logo.png" alt="HeartSnaps" class="logo-img">
             </div>
             <button class="btn btn-small btn-outline" onclick="showScreen('landing')">Cancel</button>
         </header>
