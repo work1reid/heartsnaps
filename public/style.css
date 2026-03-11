@@ -244,7 +244,7 @@ body {
 .gallery-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 220px 220px;
     gap: 16px;
     max-width: 800px;
     margin: 0 auto;
@@ -259,7 +259,7 @@ body {
 }
 
 .gallery-item.gallery-tall {
-    grid-row: span 2;
+    grid-row: 1 / -1;
 }
 
 .gallery-item:hover {
